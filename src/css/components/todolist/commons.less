@@ -1,0 +1,28 @@
+
+.common(){
+    border-radius: @bord_rad;
+    font-family: "Open Sans", Arial, serif;
+    box-sizing: border-box;
+    outline: none;
+}
+
+#main-container {
+
+    #todolist, #todo, input, div {
+        .common();
+    }
+}
+
+#assign-container {
+
+    #assign-window, input, select, option, div {
+        .common();
+    }
+}
+
+#dialog-container {
+
+    #dialog, input {
+        .common();
+    }
+}
