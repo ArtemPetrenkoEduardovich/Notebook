@@ -4,7 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     entry: "./src/app/app.jsx", // входная точка - исходный файл
     output: {
-        path: path.resolve(__dirname, './dist'),     // путь к каталогу выходных файлов - папка dist
+        path: path.resolve(__dirname, './server/dist'),     // путь к каталогу выходных файлов - папка dist
         // publicPath: '/dist/',
         filename: "bundle.js"       // название создаваемого файла
     },
@@ -33,6 +33,7 @@ module.exports = {
                 test: /\.less?$/,
                 exclude: /(node_modules)/,
                 loader: 'style-loader!css-loader!less-loader'
+                /* npm install less --save */
             }
         ]
     }

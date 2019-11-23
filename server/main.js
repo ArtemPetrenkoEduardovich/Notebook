@@ -1,3 +1,57 @@
+const express = require("express");
+const app = express();
+
+const mysql = require('./mysql');
+
+app.use(express.static(__dirname + "/dist"));
+
+app.get("/", function(request, response){
+    response.sendFile('index.html');
+});
+
+app.get("/getAllNotes", function(request, response){
+    mysql.connection.query("SELECT * FROM notes",
+    function(err, result, fields) {
+        if (err) response.send(err);
+        else response.json({notes: result});
+    });
+});
+
+app.get("/addNote", function(request, response){
+    mysql.connection.query("INSERT INTO notes(text, date) VALUES(?, now())", request.query.text,
+    function(err, result, fields) {
+        if (err) response.send(err);
+        else response.send(result);
+    });
+});
+
+app.get("/deleteNoteById", function(request, response){
+    mysql.connection.query("DELETE FROM notes WHERE id=?", request.query.id,
+    function(err, result, fields) {
+        if (err) response.send(err);
+        else response.send(result);
+    });
+});
+
+app.get("/upDateNoteById", function(request, response){
+    mysql.connection.query("UPDATE notes SET text=? WHERE id=?", [request.query.text ,request.query.id],
+    function(err, result, fields) {
+        if (err) response.send(err);
+        else response.send(result);
+    });
+});
+
+app.listen(3000);
+
+
+
+
+
+
+
+
+
+/*
 const http = require("http");
 const fs = require("fs");
 
@@ -33,3 +87,4 @@ http.createServer(function(request, response){
 //     Connection.showData();
 //     Connection.closeConnection();
 });
+*/
