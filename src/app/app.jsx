@@ -1,8 +1,8 @@
 require('../css/main.less');
 
-const React        = require('react');
-const ReactDOM     = require('react-dom');
-const Notebook  = require('./notebook/notebook.jsx');
+const React    = require('react');
+const ReactDOM = require('react-dom');
+const Notebook = require('./notebook/notebook.jsx');
 
 
 class App extends React.Component {
