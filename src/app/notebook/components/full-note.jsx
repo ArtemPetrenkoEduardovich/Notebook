@@ -1,18 +1,22 @@
-// npm install react-contenteditable --save
-const ContentEditable = require("react-contenteditable");
-
 const React    = require('react');
 const ReactDOM = require('react-dom');
 
-const Context2 = require('../context.jsx');
+const NotebookContext = require('../context.jsx');
 
 class FullNote extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            text: this.props.fullNote.text
+            text: this.props.fullNote.text,
+            height: '100px'
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            height: (this.refs.txter.scrollHeight) + 'px'
+        });
     }
 
     parseDate(date) {
@@ -23,18 +27,20 @@ class FullNote extends React.Component {
         this.props.closeFullNote();
     }
 
-    saveChanges() {
-        // fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.props.fullNote.id}`)
-        // .then(response => response.json())
-        // .then(response => fetch('http://localhost:3000'))
-        // .catch(err => console.error(err));
+    saveChanges(e) {
+        e.preventDefault();
+        fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.props.fullNote.id}`)
+        .then(this.props.getAllNotes())
+        .then(this.closeFullNote())
+        .catch(err => console.error(err));
     }
 
     handleChange(event) {
-        console.log(this.state.text);
         this.setState({
-            text: event.target.value
+            text: event.target.value,
+            height: (this.refs.txter.scrollHeight) + 'px'
         });
+        console.log(this.state.text);
     }
 
     render() {
@@ -47,82 +53,20 @@ class FullNote extends React.Component {
             <div id="full_note">
                 <p>{this.parseDate(this.props.fullNote.date)}</p>
                 <button onClick={this.closeFullNote.bind(this)}>X</button>
-                <textarea id="edit_text" onChange={this.handleChange.bind(this)}>
-                {this.props.fullNote.text}
-                </textarea>
-                <button onClick={this.saveChanges.bind(this)}>save</button>
+                <form onSubmit={this.saveChanges.bind(this)} method="GET">
+                    <textarea style={{height: this.state.height}}
+                            name="text"
+                            id="edit_text" 
+                            onChange={this.handleChange.bind(this)} 
+                            ref="txter">
+                        {this.props.fullNote.text}
+                    </textarea>
+                    <input type="submit" value="save" />
+                </form>
             </div>
             </>,
             notebook
         );
         } else { return null; }
     }
-}
-
-module.exports = FullNote;
-
-
-
-
-// // npm install react-contenteditable --save
-// const ContentEditable = require("react-contenteditable");
-
-// const React    = require('react');
-// const ReactDOM = require('react-dom');
-
-// const Context2 = require('../context.jsx');
-
-// class FullNote extends React.Component {
-
-//     constructor(props){
-//         super(props);
-//         this.state = {
-//             text: this.props.fullNote.text
-//         }
-//     }
-
-//     parseDate(date) {
-//         return date.substring(0, date.indexOf('T'));
-//     }
-
-//     closeFullNote() {
-//         this.props.closeFullNote();
-//     }
-
-//     saveChanges() {
-//         // fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.props.fullNote.id}`)
-//         // .then(response => response.json())
-//         // .then(response => fetch('http://localhost:3000'))
-//         // .catch(err => console.error(err));
-//     }
-
-//     handleChange(event) {
-//         console.log(event);
-//         this.setState({
-//             text: event.target.value
-//         });
-//     }
-
-//     render() {
-//     const notebook = document.getElementById("notebook");
-//     if (notebook) {
-//         return ReactDOM.createPortal (
-//             <>
-//             <div className="canvas"/>
-            
-//             <div id="full_note">
-//                 <p>{this.parseDate(this.props.fullNote.date)}</p>
-//                 <button onClick={this.closeFullNote.bind(this)}>X</button>
-//                 <div contenteditable="true" id="edit_text" onInput={this.handleChange.bind(this)}>
-//                 {this.props.fullNote.text}
-//                 </div>
-//                 <button onClick={this.saveChanges.bind(this)}>save</button>
-//             </div>
-//             </>,
-//             notebook
-//         );
-//         } else { return null; }
-//     }
-// }
-
-// module.exports = FullNote;
+} module.exports = FullNote;

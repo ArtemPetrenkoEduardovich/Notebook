@@ -1,6 +1,6 @@
 const React = require('react');
 
-const Context1 = require('../context.jsx');
+const NotebookContext = require('../context.jsx');
 
 const MinNote = require('./min-note.jsx');
 
@@ -10,18 +10,25 @@ class NoteList extends React.Component {
         super(props);
     }
 
+    // sout() {
+    //     let value = this.context;
+    //     console.log(value);
+    //     console.log(this.context);
+    // }
+
     render() {
-    return (
-        <div id="note_list">
-        <Context1.Consumer>
-        { state => 
-        (state.notes.map( note => 
-            <MinNote note={note} openFullNote={state.openFullNote}/>
-        ))}
-        </Context1.Consumer>
-        </div>
-    );
+        // this.sout();
+        return (
+            <div id="note_list">
+            <NotebookContext.Consumer>
+            { state => 
+            (state.notes.map( note => 
+                <MinNote note={note} openFullNote={state.openFullNote} getAllNotes={state.getAllNotes}/>
+            ))}
+            </NotebookContext.Consumer>
+            </div>
+        );
     }
-}
+}NoteList.contextType = NotebookContext;
 
 module.exports = NoteList;
