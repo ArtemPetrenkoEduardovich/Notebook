@@ -15,6 +15,7 @@ class Notebook extends React.Component {
         this.getAllNotes    = this.getAllNotes.bind(this);
         this.closeAddWindow = this.closeAddWindow.bind(this);
         this.openAddWindow  = this.openAddWindow.bind(this);
+        this.saveChanges    = this.saveChanges.bind(this);
 
         this.state = {
             // vars: 
@@ -28,6 +29,7 @@ class Notebook extends React.Component {
             closeFullNote:  this.closeFullNote,
             getAllNotes:    this.getAllNotes,
             closeAddWindow: this.closeAddWindow,
+            saveChanges:    this.saveChanges,
             openAddWindow:  this.openAddWindow
         };
     }
@@ -69,6 +71,15 @@ class Notebook extends React.Component {
         });
     }
 
+    saveChanges(text) {
+        // e.preventDefault();
+        fetch(`http://localhost:3000/upDateNoteById?text=${text.split('\n').join('<br>')}&id=${this.state.fullNote.id}`)
+        // fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.context.fullNote.id}`)
+        .then(this.getAllNotes())
+        .then(this.closeFullNote())
+        .catch(err => console.error(err));
+    }
+
     render() {
     return (
     <NotebookContext.Provider value={this.state}>
@@ -81,18 +92,10 @@ class Notebook extends React.Component {
         
         <NoteList/>
         
-        { this.state.fullNoteIsOpen ? 
-            <FullNote fullNote={this.state.fullNote} 
-                      closeFullNote={this.closeFullNote}
-                      getAllNotes={this.getAllNotes}
-                      /> 
-        : null }
+        { this.state.fullNoteIsOpen ? <FullNote /> : null }
 
-        { this.state.addWindowIsOpen ? 
-            <AddWindow closeAddWindow={this.closeAddWindow}
-                       getAllNotes={this.getAllNotes}
-                      /> 
-        : null }
+        { this.state.addWindowIsOpen ? <AddWindow /> : null }
+
     </div>
     </NotebookContext.Provider>
     );

@@ -1,5 +1,8 @@
 const React = require('react');
 
+const NotebookContext = require('../context.jsx');
+
+
 class MinNote extends React.Component {
 
     constructor(props){
@@ -19,12 +22,12 @@ class MinNote extends React.Component {
     }
 
     openFullNote() {
-        this.props.openFullNote(this.props.note);
+        this.context.openFullNote(this.props.note);
     }
 
     deleteNote() {
         fetch(`http://localhost:3000/deleteNoteById?id=${this.props.note.id}`)
-        .then(this.props.getAllNotes())
+        .then(this.context.getAllNotes())
         .catch(err => console.error(err));
     }
 
@@ -33,7 +36,7 @@ class MinNote extends React.Component {
     return (
         <div className="note_item" key={note.id}>
             <p className="text_of_note_item" onClick={this.openFullNote.bind(this)}>
-                {this.cutText(note.text)}
+                {this.cutText(note.text.replace(/<br>/g, ""))}
             </p>
             <button onClick={this.deleteNote.bind(this)}>X</button>
             <p className="date_of_note_item">
@@ -42,6 +45,6 @@ class MinNote extends React.Component {
         </div>
     );
     }
-}
+} MinNote.contextType = NotebookContext;
 
 module.exports = MinNote;

@@ -1,5 +1,8 @@
 const React    = require('react');
 const ReactDOM = require('react-dom');
+const autosize = require('autosize');
+
+const Dialog = require('./dialog.jsx');
 
 const NotebookContext = require('../context.jsx');
 
@@ -8,39 +11,24 @@ class FullNote extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            text: this.props.fullNote.text,
-            height: '100px'
-        }
+            dialogIsOpen: false
+        };
     }
 
     componentDidMount() {
         this.setState({
-            height: (this.refs.txter.scrollHeight) + 'px'
+            text: this.context.fullNote.text
         });
+        this.refs.txter.focus();
+        autosize(this.refs.txter);
     }
 
-    parseDate(date) {
-        return date.substring(0, date.indexOf('T'));
-    }
+    parseDate(date) { return date.substring(0, date.indexOf('T')); }
 
-    closeFullNote() {
-        this.props.closeFullNote();
-    }
-
-    saveChanges(e) {
-        e.preventDefault();
-        fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.props.fullNote.id}`)
-        .then(this.props.getAllNotes())
-        .then(this.closeFullNote())
-        .catch(err => console.error(err));
-    }
-
-    handleChange(event) {
+    showDialog() {
         this.setState({
-            text: event.target.value,
-            height: (this.refs.txter.scrollHeight) + 'px'
+            dialogIsOpen: true
         });
-        console.log(this.state.text);
     }
 
     render() {
@@ -51,22 +39,40 @@ class FullNote extends React.Component {
             <div className="canvas"/>
             
             <div id="full_note">
-                <p>{this.parseDate(this.props.fullNote.date)}</p>
-                <button onClick={this.closeFullNote.bind(this)}>X</button>
-                <form onSubmit={this.saveChanges.bind(this)} method="GET">
-                    <textarea style={{height: this.state.height}}
+                <p>{this.parseDate(this.context.fullNote.date)}</p>
+                <button onClick={() => this.context.closeFullNote()}>X</button>
+                {/* <form onSubmit={this.saveChanges.bind(this)} method="GET"> */}
+                    <textarea
                             name="text"
                             id="edit_text" 
-                            onChange={this.handleChange.bind(this)} 
+                            onChange={(event) => this.setState({ text: event.target.value })} 
                             ref="txter">
-                        {this.props.fullNote.text}
+                        {this.context.fullNote.text.replace(/<br>/g, "\n")}
                     </textarea>
-                    <input type="submit" value="save" />
-                </form>
+                    <input type="submit" value="save" onClick={this.showDialog.bind(this)}/>
+                {/* </form> */}
             </div>
+
+            { this.state.dialogIsOpen ? 
+            <Dialog cancel={() => this.setState({ dialogIsOpen: false })} text={this.state.text}/> 
+            : null }
             </>,
             notebook
         );
         } else { return null; }
     }
-} module.exports = FullNote;
+} FullNote.contextType = NotebookContext;
+module.exports = FullNote;
+
+
+
+
+
+    // saveChanges(e) {
+    //     e.preventDefault();
+    //     fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text.split('\n').join('<br>')}&id=${this.context.fullNote.id}`)
+    //     // fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.context.fullNote.id}`)
+    //     .then(this.context.getAllNotes())
+    //     .then(this.closeFullNote())
+    //     .catch(err => console.error(err));
+    // }

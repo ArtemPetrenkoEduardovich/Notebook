@@ -8,6 +8,7 @@
         "build": "webpack"
     },
     "dependencies": {
+        "autosize": "^4.0.2",
         "express": "^4.16.4",
         "less": "^3.10.3",
         "less-loader": "^5.0.0",

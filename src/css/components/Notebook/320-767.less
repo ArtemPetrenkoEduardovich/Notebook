@@ -76,7 +76,7 @@
         border-top: none;
     }
 
-    #full_note, #add-window {
+    #full_note, #add-window{
         position: absolute;
         top: 100px;
         left: 50%;
@@ -92,7 +92,7 @@
             top: 20px;
             left: 20px;
         }
-        button {
+        input, button {
             float: right;
             font-size: 30px;
         }
@@ -111,6 +111,38 @@
             overflow: hidden;
             // resize: vertical;
             resize: none;
+        }
+    }
+
+    #dialog-window {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        width: 80%;
+        min-height: 200px;
+        .border();
+        background: #ccc;
+        p {
+            text-align: center;
+            font-size: 40px;
+            color: @color1;
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+        button {
+            margin-bottom: 20px;
+            float: left;
+            width: 80px;
+            font-size: 30px;
+            margin-left: 250px;
+            cursor: pointer;
+            &:hover{
+                background-color: @color2;
+            }
+            &:active{
+                background-color: darken(@color2, 20%);
+            }
         }
     }
 }

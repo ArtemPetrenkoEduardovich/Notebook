@@ -1,5 +1,6 @@
 const React    = require('react');
 const ReactDOM = require('react-dom');
+const autosize = require('autosize');
 
 const NotebookContext = require('../context.jsx');
 
@@ -8,35 +9,31 @@ class AddWindow extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            text: "",
-            height: '60px'
+            text: ""
         }
     }
 
     componentDidMount() {
-        this.setState({
-            height: (this.refs.txter.scrollHeight) + 'px'
-        });
+        this.refs.txter.focus();
+        autosize(this.refs.txter);
     }
 
     handleChange(event) {
         this.setState({
-            text: event.target.value,
-            height: (this.refs.txter.scrollHeight) + 'px'
+            text: event.target.value
         });
-        console.log(this.state.text);
     }
 
     addNote(e) {
         e.preventDefault();
-        fetch(`http://localhost:3000/addNote?text=${this.state.text}`)
-        .then(this.props.getAllNotes())
+        fetch(`http://localhost:3000/addNote?text=${this.state.text.split('\n').join('<br>')}`)
+        .then(this.context.getAllNotes())
         .then(this.close())
         .catch(err => console.error(err));
     }
 
     close() {
-        this.props.closeAddWindow();
+        this.context.closeAddWindow();
     }
 
     render() {
@@ -49,11 +46,10 @@ class AddWindow extends React.Component {
     <div id="add-window">
         <button onClick={this.close.bind(this)}>X</button>
         <form onSubmit={this.addNote.bind(this)} method="GET">
-            <textarea style={{height: this.state.height}}
-                    name="text"
-                    id="edit_text" 
-                    onChange={this.handleChange.bind(this)} 
-                    ref="txter">
+            <textarea name="text"
+                      id="edit_text"
+                      onChange={this.handleChange.bind(this)} 
+                      ref="txter">
             </textarea>
             <input type="submit" value="Add" />
         </form>
@@ -63,4 +59,6 @@ class AddWindow extends React.Component {
     );
     } else { return null; }
     }
-} module.exports = AddWindow;
+} AddWindow.contextType = NotebookContext; 
+
+module.exports = AddWindow;

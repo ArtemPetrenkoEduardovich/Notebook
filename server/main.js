@@ -12,6 +12,7 @@ app.get("/", function(request, response){
 app.get("/getAllNotes", function(request, response){
     mysql.connection.query("SELECT * FROM notes",
     function(err, result, fields) {
+        // console.log(result);
         if (err) response.send(err);
         else response.json({notes: result});
     });
@@ -36,6 +37,7 @@ app.get("/deleteNoteById", function(request, response){
 app.get("/upDateNoteById", function(request, response){
     mysql.connection.query("UPDATE notes SET text=? WHERE id=?", [request.query.text ,request.query.id],
     function(err, result, fields) {
+        console.log(result);
         if (err) response.send(err);
         else response.send(result);
     });

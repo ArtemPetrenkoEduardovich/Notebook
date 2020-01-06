@@ -10,20 +10,13 @@ class NoteList extends React.Component {
         super(props);
     }
 
-    // sout() {
-    //     let value = this.context;
-    //     console.log(value);
-    //     console.log(this.context);
-    // }
-
     render() {
-        // this.sout();
         return (
             <div id="note_list">
             <NotebookContext.Consumer>
             { state => 
             (state.notes.map( note => 
-                <MinNote note={note} openFullNote={state.openFullNote} getAllNotes={state.getAllNotes}/>
+                <MinNote note={note} />
             ))}
             </NotebookContext.Consumer>
             </div>
