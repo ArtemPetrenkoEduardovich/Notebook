@@ -1,5 +1,7 @@
-const express = require("express");
-const app = express();
+var express = require('express');
+var app = require('express')();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
 
 const mysql = require('./mysql');
 
@@ -43,7 +45,17 @@ app.get("/upDateNoteById", function(request, response){
     });
 });
 
-app.listen(3000);
+// app.listen(3000);
+
+io.on('connection', function(socket){
+    socket.on('updateList', function() {
+        socket.broadcast.emit('updateList');
+    });
+});
+
+http.listen(3000, function(){
+    console.log('listening on *:3000');
+});
 
 
 

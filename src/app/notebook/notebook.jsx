@@ -4,6 +4,9 @@ const NoteList  = require('./components/note-list.jsx');
 const FullNote = require('./components/full-note.jsx');
 const AddWindow = require('./components/add-window.jsx');
 
+const OpenSocket = require('socket.io-client');
+const socket = OpenSocket('http://localhost:3000');
+
 const NotebookContext = require('./context.jsx');
 
 class Notebook extends React.Component {
@@ -23,6 +26,7 @@ class Notebook extends React.Component {
             fullNote:        null,
             fullNoteIsOpen:  false,
             addWindowIsOpen: false,
+            socket:          socket,
 
             // functions:
             openFullNote:   this.openFullNote,
@@ -36,6 +40,9 @@ class Notebook extends React.Component {
 
     componentDidMount() {
         this.getAllNotes();
+        socket.on('updateList', () => 
+            this.state.getAllNotes()
+        );
     }
 
     getAllNotes(){
@@ -77,6 +84,7 @@ class Notebook extends React.Component {
         // fetch(`http://localhost:3000/upDateNoteById?text=${this.state.text}&id=${this.context.fullNote.id}`)
         .then(this.getAllNotes())
         .then(this.closeFullNote())
+        .then(socket.emit('updateList'))
         .catch(err => console.error(err));
     }
 

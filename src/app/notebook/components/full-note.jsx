@@ -25,11 +25,7 @@ class FullNote extends React.Component {
 
     parseDate(date) { return date.substring(0, date.indexOf('T')); }
 
-    showDialog() {
-        this.setState({
-            dialogIsOpen: true
-        });
-    }
+    showDialog() { this.setState({ dialogIsOpen: true }); }
 
     render() {
     const notebook = document.getElementById("notebook");

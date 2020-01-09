@@ -19,21 +19,16 @@ class AddWindow extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({
-            text: event.target.value
-        });
+        this.setState({ text: event.target.value });
     }
 
     addNote(e) {
         e.preventDefault();
         fetch(`http://localhost:3000/addNote?text=${this.state.text.split('\n').join('<br>')}`)
         .then(this.context.getAllNotes())
-        .then(this.close())
+        .then(this.context.closeAddWindow())
+        .then(this.context.socket.emit('updateList'))
         .catch(err => console.error(err));
-    }
-
-    close() {
-        this.context.closeAddWindow();
     }
 
     render() {
@@ -44,7 +39,7 @@ class AddWindow extends React.Component {
     <div className="canvas"/>
     
     <div id="add-window">
-        <button onClick={this.close.bind(this)}>X</button>
+        <button onClick={() => this.context.closeAddWindow()}>X</button>
         <form onSubmit={this.addNote.bind(this)} method="GET">
             <textarea name="text"
                       id="edit_text"

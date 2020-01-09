@@ -21,13 +21,10 @@ class MinNote extends React.Component {
         return text;
     }
 
-    openFullNote() {
-        this.context.openFullNote(this.props.note);
-    }
-
     deleteNote() {
         fetch(`http://localhost:3000/deleteNoteById?id=${this.props.note.id}`)
         .then(this.context.getAllNotes())
+        .then(this.context.socket.emit('updateList'))
         .catch(err => console.error(err));
     }
 
@@ -35,10 +32,10 @@ class MinNote extends React.Component {
     const note = { ...this.props.note }
     return (
         <div className="note_item" key={note.id}>
-            <p className="text_of_note_item" onClick={this.openFullNote.bind(this)}>
+            <p className="text_of_note_item" onClick={() => this.context.openFullNote(this.props.note)}>
                 {this.cutText(note.text.replace(/<br>/g, ""))}
             </p>
-            <button onClick={this.deleteNote.bind(this)}>X</button>
+            <button onClick={() => this.deleteNote()}>X</button>
             <p className="date_of_note_item">
                 {this.parseDate(note.date)}
             </p>
